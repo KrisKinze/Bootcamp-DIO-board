@@ -43,7 +43,23 @@ public class MainMenu {
     private void createBoard() throws SQLException {
         var entity = new BoardEntity();
         System.out.println("Informe o nome do seu board");
-        entity.setName(scanner.next());
+        var boardName = scanner.next();
+        
+        // Verificar se já existe um board com esse nome
+        try(var connection = getConnection()){
+            var checkSql = "SELECT COUNT(*) FROM BOARDS WHERE name = ?";
+            try(var statement = connection.prepareStatement(checkSql)) {
+                statement.setString(1, boardName);
+                try(var resultSet = statement.executeQuery()) {
+                    if(resultSet.next() && resultSet.getInt(1) > 0) {
+                        System.out.printf("Já existe um board com o nome '%s'. Escolha outro nome.\n", boardName);
+                        return;
+                    }
+                }
+            }
+        }
+        
+        entity.setName(boardName);
 
         System.out.println("Seu board terá colunas além das 3 padrões? Se sim informe quantas, senão digite '0'");
         var additionalColumns = scanner.nextInt();
@@ -81,10 +97,29 @@ public class MainMenu {
     }
 
     private void selectBoard() throws SQLException {
-        System.out.println("Informe o id do board que deseja selecionar");
-        var id = scanner.nextLong();
         try(var connection = getConnection()){
             var queryService = new BoardQueryService(connection);
+            
+            // Mostrar boards disponíveis
+            System.out.println("Boards disponíveis:");
+            var sql = "SELECT id, name FROM BOARDS ORDER BY id";
+            try(var statement = connection.prepareStatement(sql);
+                var resultSet = statement.executeQuery()) {
+                
+                boolean hasBoards = false;
+                while(resultSet.next()) {
+                    hasBoards = true;
+                    System.out.printf("%d - %s\n", resultSet.getLong("id"), resultSet.getString("name"));
+                }
+                
+                if (!hasBoards) {
+                    System.out.println("Não há boards criados ainda. Crie um board primeiro.");
+                    return;
+                }
+            }
+            
+            System.out.println("Informe o id do board que deseja selecionar");
+            var id = scanner.nextLong();
             var optional = queryService.findById(id);
             optional.ifPresentOrElse(
                     b -> new BoardMenu(b).execute(),
@@ -94,9 +129,27 @@ public class MainMenu {
     }
 
     private void deleteBoard() throws SQLException {
-        System.out.println("Informe o id do board que será excluido");
-        var id = scanner.nextLong();
         try(var connection = getConnection()){
+            // Mostrar boards disponíveis
+            System.out.println("Boards disponíveis para exclusão:");
+            var sql = "SELECT id, name FROM BOARDS ORDER BY id";
+            try(var statement = connection.prepareStatement(sql);
+                var resultSet = statement.executeQuery()) {
+                
+                boolean hasBoards = false;
+                while(resultSet.next()) {
+                    hasBoards = true;
+                    System.out.printf("%d - %s\n", resultSet.getLong("id"), resultSet.getString("name"));
+                }
+                
+                if (!hasBoards) {
+                    System.out.println("Não há boards para excluir.");
+                    return;
+                }
+            }
+            
+            System.out.println("Informe o id do board que será excluido");
+            var id = scanner.nextLong();
             var service = new BoardService(connection);
             if (service.delete(id)){
                 System.out.printf("O board %s foi excluido\n", id);

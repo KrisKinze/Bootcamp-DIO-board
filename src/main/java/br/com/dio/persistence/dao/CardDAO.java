@@ -27,18 +27,36 @@ public class CardDAO {
             statement.executeUpdate();
             if (statement instanceof StatementImpl impl){
                 entity.setId(impl.getLastInsertID());
+                
+                // Registrar movimento inicial para a coluna inicial
+                var movementDAO = new CardMovementDAO(connection);
+                var movement = new br.com.dio.persistence.entity.CardMovementEntity();
+                movement.setCardId(entity.getId());
+                movement.setFromColumnId(null); // null indica criação
+                movement.setToColumnId(entity.getBoardColumn().getId());
+                movement.setMovedAt(java.time.OffsetDateTime.now());
+                movementDAO.insert(movement);
             }
         }
         return entity;
     }
 
-    public void moveToColumn(final Long columnId, final Long cardId) throws SQLException{
+    public void moveToColumn(final Long fromColumnId, final Long toColumnId, final Long cardId) throws SQLException{
         var sql = "UPDATE CARDS SET board_column_id = ? WHERE id = ?;";
         try(var statement = connection.prepareStatement(sql)){
             var i = 1;
-            statement.setLong(i ++, columnId);
+            statement.setLong(i ++, toColumnId);
             statement.setLong(i, cardId);
             statement.executeUpdate();
+            
+            // Registrar movimento
+            var movementDAO = new CardMovementDAO(connection);
+            var movement = new br.com.dio.persistence.entity.CardMovementEntity();
+            movement.setCardId(cardId);
+            movement.setFromColumnId(fromColumnId);
+            movement.setToColumnId(toColumnId);
+            movement.setMovedAt(java.time.OffsetDateTime.now());
+            movementDAO.insert(movement);
         }
     }
 

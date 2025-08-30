@@ -55,7 +55,7 @@ public class CardService {
             var nextColumn = boardColumnsInfo.stream()
                     .filter(bc -> bc.order() == currentColumn.order() + 1)
                     .findFirst().orElseThrow(() -> new IllegalStateException("O card está cancelado"));
-            dao.moveToColumn(nextColumn.id(), cardId);
+            dao.moveToColumn(currentColumn.id(), nextColumn.id(), cardId);
             connection.commit();
         }catch (SQLException ex){
             connection.rollback();
@@ -85,7 +85,7 @@ public class CardService {
             boardColumnsInfo.stream()
                     .filter(bc -> bc.order() == currentColumn.order() + 1)
                     .findFirst().orElseThrow(() -> new IllegalStateException("O card está cancelado"));
-            dao.moveToColumn(cancelColumnId, cardId);
+            dao.moveToColumn(currentColumn.id(), cancelColumnId, cardId);
             connection.commit();
         }catch (SQLException ex){
             connection.rollback();
