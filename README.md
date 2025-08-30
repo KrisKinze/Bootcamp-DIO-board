@@ -1,4 +1,4 @@
-﻿# 📋 Sistema de Board Kanban
+# 📋 Sistema de Board Kanban
 
 > Um sistema completo de gerenciamento de tarefas tipo Kanban desenvolvido em Java com persistência MySQL.
 
@@ -44,15 +44,13 @@ Este é um sistema de board para gerenciamento de tarefas que permite organizar 
 
 O projeto segue uma arquitetura em camadas bem definidas:
 
-`
-📁 Estrutura do Projeto
-├── 🎛️ UI (Interface)     → Menus interativos no console
-├── ⚙️ Service (Negócio)  → Lógica de negócio e validações
-├── 💾 DAO (Dados)        → Acesso ao banco de dados
-├── 🏛️ Entity (Modelo)    → Representação das entidades
-├── 📦 DTO (Transporte)   → Objetos de transferência
-└── ⚠️ Exception (Erros)  → Tratamento de exceções
-`
+**Estrutura do Projeto:**
+- 🎛️ **UI (Interface)** → Menus interativos no console
+- ⚙️ **Service (Negócio)** → Lógica de negócio e validações  
+- 💾 **DAO (Dados)** → Acesso ao banco de dados
+- 🏛️ **Entity (Modelo)** → Representação das entidades
+- 📦 **DTO (Transporte)** → Objetos de transferência
+- ⚠️ **Exception (Erros)** → Tratamento de exceções
 
 ### Banco de Dados
 
@@ -71,14 +69,17 @@ O sistema utiliza 5 tabelas principais:
 - MySQL instalado e configurado
 
 ### Configuração
-`ash
-# 1. Configure o banco de dados
-mysql -u root -p < setup-database.sql
 
-# 2. Execute a aplicação
+**1. Configure o banco de dados**
+```bash
+mysql -u root -p < setup-database.sql
+```
+
+**2. Execute a aplicação**
+```bash
 .\run.bat          # Windows
 ./gradlew run      # Linux/Mac
-`
+```
 
 ### Primeiro Uso
 1. Execute o programa
@@ -120,7 +121,5 @@ O sistema mantém registro completo de:
 - Tempo gasto em cada etapa do processo
 
 ---
-
-Este projeto representa uma implementação completa de um sistema de gerenciamento de tarefas estilo Kanban, desenvolvido em Java com foco em boas práticas de programação, arquitetura limpa e persistência de dados. O sistema oferece todas as funcionalidades essenciais para organização de fluxo de trabalho, incluindo recursos avançados como relatórios detalhados de tempo e bloqueios, sistema de rastreamento de movimentações e interface intuitiva via console. Através de uma arquitetura bem estruturada em camadas (UI, Service, DAO, Entity), o projeto demonstra o uso efetivo de tecnologias modernas como Liquibase para versionamento de banco de dados, Lombok para redução de código repetitivo, e padrões de design que garantem escalabilidade e manutenibilidade do código.
 
 **Bootcamp DIO** - Projeto desenvolvido para demonstrar conhecimentos em Java e desenvolvimento de sistemas
